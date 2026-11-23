@@ -58,7 +58,7 @@ jobs:
       - name: Configure Capacitor with Live Update URL & Build APK
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
-          npx cap init "Banglar Joddha" "com.bhanu.banglarjoddha" --web-dir=dist
+          rm -f capacitor.config.ts capacitor.config.js
           node -e '
             const fs = require("fs");
             const cfg = {
