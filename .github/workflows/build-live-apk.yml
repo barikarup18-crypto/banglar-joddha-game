@@ -25,6 +25,7 @@ jobs:
         run: |
           mkdir -p extracted
           unzip -q game.zip -d extracted
+          chmod -R u+rwX extracted
           PKG_DIR=$(dirname $(find extracted -name "package.json" | head -n 1))
           cp -r "$PKG_DIR"/* .
           rm -rf extracted
