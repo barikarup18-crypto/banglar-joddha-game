@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies & Build Web App
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build -- --base=/banglar-joddha-game/
 
       - name: Upload GitHub Pages Artifact
@@ -57,7 +57,7 @@ jobs:
 
       - name: Configure Capacitor with Live Update URL & Build APK
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
           npx cap init "Banglar Joddha" "com.bhanu.banglarjoddha" --web-dir=dist
           node -e '
             const fs = require("fs");
