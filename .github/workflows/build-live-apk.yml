@@ -49,7 +49,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Setup Java 17 for Android APK
+      - name: Setup Java 21 for Android APK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
