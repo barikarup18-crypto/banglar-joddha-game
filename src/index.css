@@ -1,0 +1,10 @@
+html, body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (orientation: landscape) {
+  body {
+    font-size: clamp(12px, 1.5vw, 16px);
+  }
+}
