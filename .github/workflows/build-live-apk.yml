@@ -45,9 +45,9 @@ jobs:
         with:
           path: ./dist
 
-      - name: Deploy to GitHub Pages (Live Auto-Update)
-        id: deployment
-        uses: actions/deploy-pages@v4
+      -# name: Deploy to GitHub Pages (Live Auto-Update)
+      #  id: deployment
+       # uses: actions/deploy-pages@v4
 
       - name: Setup Java 17 for Android APK
         uses: actions/setup-java@v4
