@@ -45,9 +45,9 @@ jobs:
         with:
           path: ./dist
 
-       - name: Deploy to GitHub Pages (Live Auto-Update)
-         id: deployment
-         uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages (Live Auto-Update)
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Setup Java 17 for Android APK
         uses: actions/setup-java@v4
@@ -72,11 +72,11 @@ jobs:
             };
             fs.writeFileSync("capacitor.config.json", JSON.stringify(cfg, null, 2));
           '
-                     npx cap add android
+          npx cap add android
           sed -i 's/minSdkVersion = .*/minSdkVersion = 22/' android/variables.gradle || true
           sed -i 's/compileSdkVersion = .*/compileSdkVersion = 34/' android/variables.gradle || true
           sed -i 's/targetSdkVersion = .*/targetSdkVersion = 34/' android/variables.gradle || true
-          
+
           cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
@@ -95,5 +95,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Banglar-Joddha-Live-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk 
-          
+          path: android/app/build/outputs/apk/debug/app-debug.apk
