@@ -1,98 +1,23 @@
-name: Build Live Web & Android APK
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Extract game.zip
-        run: |
-          mkdir -p extracted
-          unzip -q game.zip -d extracted
-          chmod -R u+rwX extracted
-          PKG_DIR=$(dirname $(find extracted -name "package.json" | head -n 1))
-          cp -r "$PKG_DIR"/* .
-          rm -rf extracted
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies & Build Web App
-        run: |
-          npm install --legacy-peer-deps
-          npm run build -- --base=/banglar-joddha-game/
-
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./dist
+          path: dist
 
       - name: Deploy to GitHub Pages (Live Auto-Update)
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Setup Java 17 for Android APK
-        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Configure Capacitor with Live Update URL & Build APK
-        run: |
-          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 --legacy-peer-deps
-          rm -f capacitor.config.ts capacitor.config.js
-          node -e '
-            const fs = require("fs");
-            const cfg = {
-              appId: "com.bhanu.banglarjoddha",
-              appName: "Banglar Joddha",
-              webDir: "dist",
-              server: {
-                url: "https://barikarup18-crypto.github.io/banglar-joddha-game/",
-                cleartext: true
-              }
-            };
-            fs.writeFileSync("capacitor.config.json", JSON.stringify(cfg, null, 2));
-          '
-          npx cap add android
-          sed -i 's/minSdkVersion = .*/minSdkVersion = 22/' android/variables.gradle || true
-          sed -i 's/compileSdkVersion = .*/compileSdkVersion = 34/' android/variables.gradle || true
-          sed -i 's/targetSdkVersion = .*/targetSdkVersion = 34/' android/variables.gradle || true
-
-          cat << 'EOF' >> android/app/build.gradle
-
-          configurations.all {
-              resolutionStrategy {
-                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
-              }
-          }
-          EOF
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Upload Android APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Banglar-Joddha-Live-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          artifact_name: github-pages
+                    if [ -f "logo.png" ]; then
+            sudo apt-get update -y && sudo apt-get install -y imagemagick
+            convert logo.png -resize 48x48   android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+            convert logo.png -resize 72x72   android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+            convert logo.png -resize 96x96   android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+            convert logo.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+            convert logo.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+            cp android/app/src/main/res/mipmap-mdpi/ic_launcher.png    android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+            cp android/app/src/main/res/mipmap-hdpi/ic_launcher.png    android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+            cp android/app/src/main/res/mipmap-xhdpi/ic_launcher.png   android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+            cp android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png  android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+            cp android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          fi
